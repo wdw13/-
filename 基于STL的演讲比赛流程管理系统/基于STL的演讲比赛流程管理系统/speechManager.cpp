@@ -8,6 +8,9 @@ SpeechManager::SpeechManager()
 
 	//创建12名选手
 	this->createSpeaker();
+
+	//加载往届记录
+	this->loadRecord();
 }
 
 
@@ -39,6 +42,7 @@ void SpeechManager::initSpeech()
 	this->v2.clear();
 	this->vVictory.clear();
 	this->m_Speaker.clear();
+	this->m_Record.clear();
 
 	//初始化比赛轮数
 	this->m_Index = 1;
@@ -82,16 +86,36 @@ void SpeechManager::startSpeech()
 	this->speechContest();
 
 	//3.显示晋级结果
+	this->showScore();
 
 	//第二轮开始比赛
+	this->m_Index++;
 
 	//1.抽签
+	this->speechDraw();
 
 	//2.比赛
+	this->speechContest();
 
 	//3.显示最终结果
+	this->showScore();
 
 	//4.保存分数到文件中
+	this->saveRecord();
+
+	//重置比赛
+	//初始化容器和属性
+	this->initSpeech();
+
+	//创建12名选手
+	this->createSpeaker();
+
+	//加载往届记录
+	this->loadRecord();
+
+	cout << "本届比赛完毕！" << endl;
+	system("pause");
+	system("cls");
 }
 
 //抽签
@@ -211,6 +235,167 @@ void SpeechManager::speechContest()
 
 	cout << endl;
 }
+
+//显示得分
+void SpeechManager::showScore()
+{
+	cout << "------------------第" << this->m_Index << "轮晋级选手信息如下：-----------" << endl;
+
+	vector<int>v;
+	if (this->m_Index == 1)
+	{
+		v = v2;
+	}
+	else
+	{
+		v = vVictory;
+	}
+
+	for (vector<int>::iterator it=v.begin();it!=v.end();it++)
+	{
+		cout << "选手编号：" << *it << " 姓名：" << this->m_Speaker[*it].m_Name << " 得分：" << 
+			this->m_Speaker[*it].m_Score[this->m_Index - 1] << endl;
+	}
+	cout << endl;
+
+	system("pause");
+	system("cls");
+	this->show_Menu();
+}
+
+//保存记录
+void SpeechManager::saveRecord()
+{
+	ofstream ofs;
+	ofs.open("speech.csv", ios::out | ios::app);//用追加的方式写文件
+
+	//将每个选手数据写入到文件中
+	for (vector<int>::iterator it = vVictory.begin(); it != vVictory.end(); it++)
+	{
+		ofs << *it << "," << this->m_Speaker[*it].m_Score[1] << ",";
+	}
+	ofs << endl;
+
+	ofs.close();
+	cout << "记录已经保存" << endl;
+
+	this->fileIsEmpty = false;
+}
+
+//读取记录
+void SpeechManager::loadRecord()
+{
+	ifstream ifs("speech.csv", ios::in);
+	if (!ifs.is_open())
+	{
+		this->fileIsEmpty = true;
+		//cout << "文件不存在" << endl;
+		ifs.close();
+		return;
+	}
+
+	//文件清空清空
+	char ch;
+	ifs >> ch;
+	if (ifs.eof())
+	{
+		//cout << "文件为空" << endl;
+		this->fileIsEmpty = true;
+		ifs.close();
+		return;
+	}
+
+	//文件不为空
+	this->fileIsEmpty = false;
+
+	ifs.putback(ch);//将上面读取的单个字符放回来
+
+	string data;
+	int index = 0;
+
+	while (ifs>>data)
+	{
+		//cout << data << endl;
+
+		vector<string>v;
+
+		int pos = -1;//查到","位置变量
+		int start = 0;
+
+		while (true)
+		{
+			pos = data.find(",", start);
+			if (pos == -1)
+			{
+				break;
+			}
+			string temp = data.substr(start, pos - start);
+			//cout << temp << endl;
+			v.push_back(temp);
+			start = pos + 1;
+		}
+
+		this->m_Record.insert(make_pair(index, v));
+		index++;
+	}
+
+	ifs.close();
+
+	/*for (map<int, vector<string>>::iterator it = m_Record.begin(); it != m_Record.end(); it++)
+	{
+		cout << it->first << "冠军编号：" << it->second[0] << " 分数：" << it->second[1] << endl;
+	}*/
+}
+
+//显示往届记录
+void SpeechManager::showRecord()
+{
+	if (this->fileIsEmpty)
+	{
+		cout << "文件为空或者文件不存在！" << endl;
+	}
+	else
+	{
+		for (int i = 0; i < this->m_Record.size(); i++)
+		{
+			cout << "第" << i + 1 << "届"
+				<< "冠军编号：" << this->m_Record[i][0] << " 得分" << this->m_Record[i][1] << " "
+				<< "亚军编号：" << this->m_Record[i][2] << " 得分" << this->m_Record[i][3] << " "
+				<< "季军编号：" << this->m_Record[i][4] << " 得分" << this->m_Record[i][5] << endl;
+		}
+	}
+	system("pause");
+	system("cls");
+}
+
+//清空记录
+void SpeechManager::clearRecord()
+{
+	cout << "确认清空？" << endl;
+	cout << "1.是" << endl;
+	cout << "2.否" << endl;
+
+	int select = 0;
+	cin >> select;
+
+	if (select == 1)
+	{
+		ofstream ofs("speech.csv", ios::trunc);
+		ofs.close();
+
+		this->initSpeech();
+
+		this->createSpeaker();
+
+		this->loadRecord();
+
+		cout << "清空成功！" << endl;
+	}
+
+	system("pause");
+	system("cls");
+}
+
 
 //析构函数
 SpeechManager::~SpeechManager()

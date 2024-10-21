@@ -2,9 +2,13 @@
 using namespace std;
 #include "speechManager.h"
 #include <string>
+#include <ctime>
 
 int main()
 {
+	//随机数种子
+	srand((unsigned int)time(NULL));
+
 	//创建管理类对象
 	SpeechManager sm;
 
@@ -14,12 +18,12 @@ int main()
 		cout << "选手编号：" << it->first << " 姓名：" << it->second.m_Name << " 分数：" << it->second.m_Score[0] << endl;
 	}*/
 
-	cout << "请输入您的选择：" << endl;
 	int choice = 0;//用于存储用户输入
 
 	while (true)
 	{
 		sm.show_Menu();
+		cout << "请输入您的选择：" << endl;
 
 		cin >> choice;
 
@@ -29,8 +33,10 @@ int main()
 			sm.startSpeech();
 			break;
 		case 2://查看往届比赛记录
+			sm.showRecord();
 			break;
 		case 3://清空比赛记录
+			sm.clearRecord();
 			break;
 		case 0://退出系统
 			sm.exitSystem();
