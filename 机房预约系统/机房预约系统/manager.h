@@ -5,6 +5,11 @@ using namespace std;
 #include <string>
 #include <fstream>
 #include "globalFile.h"
+#include <vector>
+#include "student.h"
+#include "teacher.h"
+#include <algorithm>
+#include "computerRoom.h"
 
 class Manager :public Identity
 {
@@ -30,4 +35,19 @@ public:
 
 	//清空预约记录
 	void cleanFile();
+
+	//初始化容器
+	void initVector();
+
+	//学生容器
+	vector<Student> vStu;
+
+	//教师容器
+	vector<Teacher> vTea;
+
+	//检测重复
+	bool checkRepeat(int id, int type);
+
+	//机房容器
+	vector<ComputerRoom> vCom;
 };

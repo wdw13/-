@@ -24,27 +24,101 @@ void managerMenu(Identity * &manager)
 
 		if (select == 1)//添加账号
 		{
-			cout << "添加账号" << endl;
+			//cout << "添加账号" << endl;
 			man->addPerson();
 		}
 		else if (select == 2)//查看账号
 		{
-			cout << "查看账号" << endl;
+			//cout << "查看账号" << endl;
 			man->showPerson();
 		}
 		else if (select == 3)//查看机房信息
 		{
-			cout << "查看机房信息" << endl;
+			//cout << "查看机房信息" << endl;
 			man->showComputer();
 		}
 		else if (select == 4)//清空预约
 		{
-			cout << "清空预约" << endl;
+			//cout << "清空预约" << endl;
 			man->cleanFile();
 		}
 		else//注销
 		{
 			delete manager;//销毁堆区对象
+			cout << "注销成功" << endl;
+			system("pause");
+			system("cls");
+			return;
+		}
+	}
+}
+
+//学生菜单
+void studentMenu(Identity * &student)
+{
+	while (true)
+	{
+		//调用管理员子菜单
+		student->operMenu();
+
+		//将父类指针转为子类指针
+		Student * stu = (Student*)student;
+
+		int select = 0;
+		cin >> select;
+
+		if (select == 1)//申请预约
+		{
+			stu->applyOrder();
+		}
+		else if (select == 2)//查看自身预约
+		{
+			stu->showMyOrder();
+		}
+		else if (select == 3)//查看所有预约
+		{
+			stu->showAllOrder();
+		}
+		else if (select == 4)//取消预约
+		{
+			stu->cancelOrder();
+		}
+		else//注销
+		{
+			delete student;//销毁堆区对象
+			cout << "注销成功" << endl;
+			system("pause");
+			system("cls");
+			return;
+		}
+	}
+}
+
+//教师菜单
+void TeacherMenu(Identity * &teacher)
+{
+	while (true)
+	{
+		//调用管理员子菜单
+		teacher->operMenu();
+
+		//将父类指针转为子类指针
+		Teacher * tea = (Teacher*)teacher;
+
+		int select = 0;
+		cin >> select;
+
+		if (select == 1)//查看所有预约
+		{
+			tea->showAllOrder();
+		}
+		else if (select == 2)//审核预约
+		{
+			tea->validOrder();
+		}
+		else//注销
+		{
+			delete teacher;//销毁堆区对象
 			cout << "注销成功" << endl;
 			system("pause");
 			system("cls");
@@ -109,7 +183,7 @@ void LoginIn(string fileName, int type)
 				system("cls");
 				person = new Student(id, name, pwd);
 				//进入学生身份的子菜单
-
+				studentMenu(person);
 
 				return;
 			}
@@ -130,7 +204,7 @@ void LoginIn(string fileName, int type)
 				system("cls");
 				person = new Teacher(id, name, pwd);
 				//进入教师身份的子菜单
-
+				TeacherMenu(person);
 
 				return;
 			}

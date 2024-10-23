@@ -1,4 +1,8 @@
 ﻿  manager.cpp
+  student.cpp
+c:\users\11847\desktop\c-for-heima\机房预约系统\机房预约系统\student.cpp(248): warning C4018: “<=”: 有符号/无符号不匹配
+  teacher.cpp
+c:\users\11847\desktop\c-for-heima\机房预约系统\机房预约系统\teacher.cpp(116): warning C4018: “<=”: 有符号/无符号不匹配
   机房预约系统.cpp
   正在生成代码...
   机房预约系统.vcxproj -> C:\Users\11847\Desktop\C-for-heima\机房预约系统\Debug\机房预约系统.exe
